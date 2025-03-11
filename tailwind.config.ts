@@ -8,10 +8,14 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+      fontFamily: {
+        sans: ['Noto Sans KR', 'sans-serif'],
+        bmjua: ['BMJUA', 'sans-serif'],
       },
+      colors: {
+        themeBlue: "#2EC4E6",
+        themeNavy: "#0F103A",
+      }
     },
   },
   plugins: [],
