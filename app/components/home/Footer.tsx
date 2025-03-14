@@ -55,7 +55,7 @@ const Footer = () => {
   const router = useRouter();
 
   return (
-    <div className="w-full bottom-0 h-[7vh] flex pl-1 pr-1 bg-white z-50 items-center absolute">
+    <div className="w-full bottom-0 h-[7vh] flex pl-1 pr-1 bg-white z-50 items-center absolute border-t border-gray-200 pb-1">
       {FooterMenuItem.map((data, idx) => (
         <Fragment key={idx}>
           <div
@@ -65,7 +65,7 @@ const Footer = () => {
           }
           onClick={()=> router.push(data.pathname)}
           >
-            {data.pathname === pathname && data.icon2 ? <data.icon2 size={28} /> : <data.icon size={28} />}
+            {data.pathname === pathname && data.icon2 ? <data.icon2 size={24} /> : <data.icon size={24} />}
 
             <div>{data.title}</div>
           </div>

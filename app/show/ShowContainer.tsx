@@ -9,8 +9,6 @@ interface SHCProps{
 }
 
 const ShowContainer = ({pageNumber}:SHCProps) => {
-
-
   return (
     <div className="h-[92vh] pt-[12vh] overflow-y-auto overflow-x-hidden w-full">
       <div className="h-auto w-full flex flex-col">

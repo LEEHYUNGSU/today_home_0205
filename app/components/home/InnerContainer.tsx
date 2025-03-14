@@ -34,12 +34,6 @@ const InnerContainer = () => {
     fetchHomeData();
   }, []);
 
-  useEffect(() => {
-    console.log('post data length', postData.length);
-  }, [postData]);
-
-
-
   const fetchHomeData = async () => {
     if(postLoading || !hasMore) return;
 

@@ -1,16 +1,27 @@
 "use client";
 
-import { decodeToken, LoginUser, UserRegister } from "@/actions/UserAction";
+import { decodeToken, LoginUser } from "@/actions/UserAction";
 import React, { useEffect, useState } from "react";
 import * as jwt from "jsonwebtoken";
 import { useRouter } from "next/navigation";
+import LoginForm from "./LoginForm";
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "your-secret-key";
 
+interface JWTPayloadType{
+  userId : string;
+  username: string;
+  iat: number;
+  axp: number;
+}
+
 const Loginpage = () => {
   const [password, setPassword] = useState("");
+  // 패스워드 Input 입력 상태
   const [userId, setUserId] = useState("");
+  // 아이디 Input 입력 상태
   const [token, setToken] = useState<string | null>("");
+  // 토큰을 불러와서 저장하는 상태
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -23,73 +34,68 @@ const Loginpage = () => {
       const response = await LoginUser(userId, password);
       if (response) {
         localStorage.setItem("token", response);
-        console.log("set Token");
         setToken(response);
       }
-      console.log("login success");
     } catch (err: any) {
       console.error("Request error:", err); // 에러 로그 출력
     } finally {
-      console.log("token", token);
+      router.push("/user");
     }
+    // 모든 작업이 완료되면, 유저 상세 정보 페이지로 이동하기
+    // 이미 토큰이 존재한다면, 토큰이 존재한다고 하고, 10초 뒤에 유저 페이지로 이동시키기
   };
 
-  useEffect(() => {
-    const tokenData = localStorage.getItem("token");
-    if (tokenData) {
-      try {
-        const decoded = jwt.decode(tokenData);
-        console.log(decoded);
-      } catch (error) {
-        console.error("Error", error);
-      }
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   const tokenData = localStorage.getItem("token");
+  //   if (tokenData) {
+  //     try {
+  //       const decoded = jwt.decode(tokenData) as JWTPayloadType;
+  //       if(decoded.userId){
+  //         setDecodedId(decoded.userId);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error", error);
+  //     }
+  //   }
+  // }, [token]);
+
+  // 로그인해서 토큰을 받아오면, 먼저 토큰을 디코드해서, decode한 Id를 출력하는 Side Effect
+
+  // useEffect(() => {
+  //   const tokenData = localStorage.getItem("token");
+  //   if(tokenData){
+  //     try {
+  //       const decoded = jwt.decode(tokenData) as jwt.JwtPayload | null;
+  //       // 이 함수를 변수화시켜서 여러 곳에서 사용할 수 있어야 함. 또는 전체 상태로 관리되어야 함. ***
+  //       // JWT Payload의 Type은 exp?:number, iat?:number, [key:string]:any
+  //       if(decoded?.exp){
+  //         const currentTime = Math.floor(Date.now() / 1000);
+  //         if(decoded.exp > currentTime){
+  //           setTokenIsValid(true);
+  //         } else {
+  //           setTokenIsValid(false);
+  //         }
+  //       }
+  //     } catch (error){
+  //       console.error("Token Error");
+  //       setTokenIsValid(false);
+  //     }
+  //   }
+  // }, [token]);
+
+  // // 로그인해서 또는 로컬스토리지에 토큰이 저장되어 있으면, 토큰이 유효한지에 대한 여부를 판단하는 Side Effect
+  
+  // useEffect(() => {
+  //   if(decodedId && tokenIsValid){
+  //     alert("이미 로그인되어 있습니다.");
+  //     router.push("/user");
+  //   }
+  // }, [token, tokenIsValid]);
 
   return (
-    <div className="flex flex-col items-center w-screen h-screen overflow-hidden justify-center pb-[60px] font-bmjua">
-      <div className="w-full h-auto flex items-center justify-center text-[50px] mb-5 font-bmjua">
-        오늘의집
-      </div>
-
-      <form
-        className="w-4/5 flex flex-col items-center justify-center rounded-lg h-auto text-[17px]"
-        onSubmit={handleLogin}
-      >
-        <input
-          type="text"
-          id="userId"
-          placeholder="id를 입력하세요"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          className="username__box w-[90%] mb-2 rounded-md h-[50px] pl-3 bg-[#E5E9ED] focus:outline-themeBlue"
-        />
-        <input
-          type="password"
-          id="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="password__box w-[90%] rounded-md mb-2 h-[50px] pl-3 bg-[#E5E9ED] focus:outline-themeBlue"
-        />
-        <button
-          type="submit"
-          className="login__btn w-[90%] h-[50px] flex items-center justify-center text-[20px] bg-themeBlue text-white rounded-md mt-1"
-          onClick={handleLogin}
-        >
-          로그인하기
-        </button>
-      </form>
-
-      <div className="w-full underline justify-center mt-5 flex items-center space-x-4 text-[18px] text-gray-500 underline-offset-4">
-        <span onClick={() => router.push("/signUp")}>회원가입</span>
-        <span>비밀번호 찾기</span>
-      </div>
-
-      <div className="w-full text-[17px] text-gray-400 flex items-center justify-center mt-2">
-        로그인에 문제가 있으신가요?
-      </div>
-    </div>
+    <>
+      <LoginForm password={password} setPassword={setPassword} userId={userId} setUserId={setUserId} handleLogin={handleLogin}  />
+    </>
   );
 };
 
